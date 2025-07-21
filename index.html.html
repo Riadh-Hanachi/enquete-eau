@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Enqu�te sur l'eau potable - Tunisie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f2f2f2;
+        }
+
+        header {
+            background-color: #004080;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #004080;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #0066cc;
+            }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>Enqu�te Statistique sur l�Eau Potable - Tunisie</h2>
+    </header>
+
+    <main>
+
+        <!-- Connexion enqu�teur -->
+        <form id="loginForm">
+            <h3>Connexion Enqu�teur</h3>
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" required>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Se connecter</button>
+        </form>
+
+        <!-- Questionnaire -->
+        <form id="questionnaireForm" class="hidden">
+            <h3>Formulaire d�Enqu�te</h3>
+
+            <label for="sexe">Sexe :</label>
+            <select id="sexe" required>
+                <option value="">-- S�lectionnez --</option>
+                <option>Homme</option>
+                <option>Femme</option>
+            </select>
+
+            <label for="region">R�gion :</label>
+            <select id="region" onchange="chargerSousRegions()" required>
+                <option value="">-- S�lectionnez --</option>
+                <option value="tunis">Tunis</option>
+                <option value="sfax">Sfax</option>
+                <option value="sousse">Sousse</option>
+                <option value="ariana">Ariana</option>
+                <!-- Ajoute les 24 r�gions ici -->
+            </select>
+
+            <label for="sousRegion">Sous-r�gion :</label>
+            <select id="sousRegion" required>
+                <option value="">-- S�lectionnez la r�gion d'abord --</option>
+            </select>
+
+            <label for="metier">M�tier :</label>
+            <input type="text" id="metier" required>
+
+            <label for="salaire">Revenu mensuel :</label>
+            <select id="salaire" required>
+                <option value="">-- S�lectionnez --</option>
+                <option value="moins500">Moins de 500 TND</option>
+                <option value="500-1000">500 - 1000 TND</option>
+                <option value="1000-2000">1000 - 2000 TND</option>
+                <option value="plus2000">Plus de 2000 TND</option>
+            </select>
+
+            <label for="source">Source d�eau potable :</label>
+            <select id="source" onchange="afficherChampOrigine()" required>
+                <option value="">-- S�lectionnez --</option>
+                <option>Eau du robinet</option>
+                <option>Eau de bouteille</option>
+                <option>Eau en vrac</option>
+                <option>Eau de puits</option>
+            </select>
+
+            <div id="origineEauDiv" class="hidden">
+                <label for="origineEau">Connaissez-vous la r�gion d�origine de l�eau en vrac ?</label>
+                <input type="text" id="origineEau">
+            </div>
+
+            <label for="raison">Pourquoi avez-vous choisi cette source ?</label>
+            <select id="raison" required>
+                <option value="">-- S�lectionnez --</option>
+                <option>Qualit�</option>
+                <option>Go�t</option>
+                <option>Prix</option>
+                <option>Accessibilit�</option>
+                <option>Habitude</option>
+            </select>
+
+            <button type="submit">Soumettre</button>
+        </form>
+
+    </main>
+
+    <script>
+  const sousRegionsData = {
+    tunis: ["Bab Bhar", "El Menzah", "La Marsa", "Carthage"],
+    sfax: ["Sfax Ville", "Sfax Sud", "Sakiet Ezzit"],
+    sousse: ["Sousse Ville", "Akouda", "Hammam Sousse"],
+    ariana: ["Ariana Ville", "Soukra", "Raoued"],
+    // Ajoute d'autres gouvernorats ici...
+  };
+
+  // Connexion simul�e
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+    if (user && pass) {
+      document.getElementById("loginForm").classList.add("hidden");
+      document.getElementById("questionnaireForm").classList.remove("hidden");
+    } else {
+      alert("Identifiants requis !");
+    }
+  });
+
+  function chargerSousRegions() {
+    const region = document.getElementById("region").value;
+    const sousRegion = document.getElementById("sousRegion");
+    sousRegion.innerHTML = "<option value=''>-- S�lectionnez --</option>";
+
+    if (sousRegionsData[region]) {
+      sousRegionsData[region].forEach(sr => {
+        const opt = document.createElement("option");
+        opt.value = sr;
+        opt.textContent = sr;
+        sousRegion.appendChild(opt);
+      });
+    }
+  }
+
+  function afficherChampOrigine() {
+    const source = document.getElementById("source").value;
+    const origineDiv = document.getElementById("origineEauDiv");
+    if (source === "Eau en vrac") {
+      origineDiv.classList.remove("hidden");
+    } else {
+      origineDiv.classList.add("hidden");
+    }
+  }
+    </script>
+
+</body>
+</html>
